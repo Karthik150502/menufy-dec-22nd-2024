@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  name                  String?
+  email                 String?                @unique
+  tempEmail             String?
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  role                  UserRole               @default(USER)
+  accounts              Account[]
+  isTwoFactorEnabled    Boolean                @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
+  Restaurant            Restaurant[]
+  RestaurantStaff       RestaurantStaff[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  id            String   @id @default(cuid())
+  userId        String
+  token         String   @unique
+  isUpdateEmail Boolean  @default(false)
+  expires       DateTime
+
+  @@unique([userId, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorConfirmation {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+model Dish {
+  id           Int        @id @default(autoincrement())
+  name         String
+  description  String?
+  image        String?
+  price        Int?
+  categoryId   Int
+  category     Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+
+  ComboOnDish ComboOnDish[]
+}
+
+model Combo {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  image       String?
+  price       Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  ComboOnDish ComboOnDish[]
+}
+
+model ComboOnDish {
+  id           Int        @id @default(autoincrement())
+  dishId       Int
+  dish         Dish       @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  comboId      Int
+  combo        Combo      @relation(fields: [comboId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+}
+
+model Restaurant {
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String?
+  Image           String?
+  address         String?
+  userId          String
+  owner           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now()) @updatedAt
+  Dish            Dish[]
+  ComboOnDish     ComboOnDish[]
+  Category        Category[]
+  RestaurantStaff RestaurantStaff[]
+}
+
+model RestaurantStaff {
+  id           Int        @id @default(autoincrement())
+  userId       String
+  createdBy    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+}
+
+model Category {
+  id           Int         @id @default(autoincrement())
+  name         String
+  description  String?
+  Image        String?
+  restaurantId Int?
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now()) @updatedAt
+  Dish         Dish[]
+}
