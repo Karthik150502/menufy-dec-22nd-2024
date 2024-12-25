@@ -3,10 +3,10 @@ import { CategoryOptionsType, OptionsType, RestaurantOptionsType } from '@/types
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useQuery } from "@tanstack/react-query"
 import { useSession } from 'next-auth/react'
-import { getOptions } from '@/actions/app/getOptions'
+import { getOptions } from '@/actions/app/fetchData/getOptions'
 import { useRecoilState } from 'recoil'
 import { SelectedRestaurant } from '@/store/recoil/restAtom'
-import { getCategories } from '@/actions/app/getCategories'
+import { getCategories } from '@/actions/app/fetchData/getCategories'
 
 export type ContextType = OptionsType & {
     isPending?: boolean,

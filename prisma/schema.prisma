@@ -89,12 +89,19 @@ model TwoFactorConfirmation {
   @@unique([userId])
 }
 
+enum DishStatus {
+  AVAILABLE
+  UNAVAILABLE
+  INPREPARATION
+}
+
 model Dish {
   id           Int        @id @default(autoincrement())
   name         String
   description  String?
   image        String?
   price        Int?
+  status  DishStatus @default(AVAILABLE)
   categoryId   Int
   category     Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   restaurantId Int
@@ -106,13 +113,15 @@ model Dish {
 }
 
 model Combo {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String?
   image       String?
   price       Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  status DishStatus @default(AVAILABLE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   ComboOnDish ComboOnDish[]
 }

@@ -52,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title} className={cn("opacity-80 transition-opacity border-b hover:opacity-100 duration-300", activeRoute === item.url && "opacity-100")}>
                     <SidebarMenuButton asChild>
-                      <a href={item.url}>{item.title}</a>
+                      <Link href={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

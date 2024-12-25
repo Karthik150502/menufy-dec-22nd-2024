@@ -25,7 +25,7 @@ export default function ConfirmModal({ label, description, onCancelAction, onCon
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger>{children}</DialogTrigger>
+            <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{label}</DialogTitle>
@@ -37,7 +37,9 @@ export default function ConfirmModal({ label, description, onCancelAction, onCon
                     <Button
                         variant={"outline"}
                         onClick={() => {
-                            onCancelAction && onCancelAction()
+                            if (onCancelAction) {
+                                onCancelAction()
+                            }
                             setOpen(false);
                         }}
                     >Cancel</Button>

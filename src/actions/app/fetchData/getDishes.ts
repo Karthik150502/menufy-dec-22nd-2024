@@ -14,7 +14,14 @@ export async function getDishes(restId: number, catId: number) {
                 id: restId,
             },
             category: {
-                id: catId
+                id: catId,
+            },
+        },
+        include: {
+            category: {
+                select: {
+                    id: true, name: true
+                }
             }
         }
     })

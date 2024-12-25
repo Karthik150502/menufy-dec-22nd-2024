@@ -20,8 +20,10 @@ import { useMenufyOptions } from "@/providers/optionsProvider"
 import { useRecoilState } from 'recoil'
 import { SelectedRestaurant } from '@/store/recoil/restAtom'
 import LoaderCmp from "./loader"
+import { useRouter } from "next/navigation"
 export function GlobalRestaurantSelc() {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const router = useRouter()
     const [value, setValue] = useState("");
     const options = useMenufyOptions();
     const [label, setLabel] = useState("");
@@ -40,6 +42,7 @@ export function GlobalRestaurantSelc() {
         setSelcRest({
             id, name
         })
+        router.push("/dashboard")
     }
 
     return (

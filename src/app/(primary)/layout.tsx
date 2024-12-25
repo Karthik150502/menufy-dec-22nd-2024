@@ -1,6 +1,7 @@
 
 import { AppSidebar } from "@/components/app-sidebar"
 import BreadCrumbHeader from "@/components/app/breadCrumb"
+import CurrentRestaurant from "@/components/app/currentRestaurant"
 import Profile from "@/components/app/profileInfoCard"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -21,6 +22,8 @@ export default function LayoutPage({ children }: { children: React.ReactNode }) 
                         <SidebarTrigger className="-ml-1" />
                         <Separator orientation="vertical" className="mr-2 h-4" />
                         <BreadCrumbHeader />
+                        <Separator orientation="vertical" className="mr-2 h-4" />
+                        <CurrentRestaurant />
                     </div>
                     <div className="flex items-center justify-center gap-4">
                         <DarkModeToggle />
