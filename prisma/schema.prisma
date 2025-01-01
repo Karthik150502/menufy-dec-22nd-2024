@@ -25,6 +25,7 @@ model User {
   tempEmail             String?
   emailVerified         DateTime?
   image                 String?
+  userDataInitialized   Boolean                @default(false)
   password              String?
   role                  UserRole               @default(USER)
   accounts              Account[]
@@ -91,18 +92,19 @@ model TwoFactorConfirmation {
 
 enum DishStatus {
   AVAILABLE
-  UNAVAILABLE
   INPREPARATION
+  UNAVAILABLE
+  ARCHIVED
 }
 
 model Dish {
-  id           Int        @id @default(autoincrement())
+  id           String     @id @default(cuid())
   name         String
   description  String?
   image        String?
   price        Int?
-  status  DishStatus @default(AVAILABLE)
-  categoryId   Int
+  status       DishStatus @default(AVAILABLE)
+  categoryId   String
   category     Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
@@ -113,28 +115,30 @@ model Dish {
 }
 
 model Combo {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String?
-  image       String?
-  price       Int?
-  status DishStatus @default(AVAILABLE)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id           String     @id @default(cuid())
+  name         String
+  description  String?
+  image        String?
+  price        Int?
+  status       DishStatus @default(AVAILABLE)
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
 
   ComboOnDish ComboOnDish[]
 }
 
 model ComboOnDish {
-  id           Int        @id @default(autoincrement())
-  dishId       Int
+  dishId       String
   dish         Dish       @relation(fields: [dishId], references: [id], onDelete: Cascade)
-  comboId      Int
+  comboId      String
   combo        Combo      @relation(fields: [comboId], references: [id], onDelete: Cascade)
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
+
+  @@id([dishId, comboId])
 }
 
 model Restaurant {
@@ -151,10 +155,11 @@ model Restaurant {
   ComboOnDish     ComboOnDish[]
   Category        Category[]
   RestaurantStaff RestaurantStaff[]
+  Combo           Combo[]
 }
 
 model RestaurantStaff {
-  id           Int        @id @default(autoincrement())
+  id           String     @id @default(cuid())
   userId       String
   createdBy    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   restaurantId Int
@@ -163,7 +168,7 @@ model RestaurantStaff {
 }
 
 model Category {
-  id           Int         @id @default(autoincrement())
+  id           String      @id @default(cuid())
   name         String
   description  String?
   Image        String?

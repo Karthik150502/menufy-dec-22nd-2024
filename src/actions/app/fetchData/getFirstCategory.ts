@@ -1,8 +1,8 @@
 'use server'
 import { getSession } from "@/auth/getSession"
-import prisma from "@/lib/db";
+import prisma from "@/lib/prisma/db";
 
-export async function getFirstCategory(restId: number | null | undefined): Promise<number | null | undefined> {
+export async function getFirstCategory(restId: number | null | undefined): Promise<string | null | undefined> {
     const session = await getSession();
     if (!session?.user) {
         throw new Error("Unauthenticated")

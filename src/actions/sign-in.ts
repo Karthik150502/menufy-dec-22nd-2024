@@ -5,7 +5,7 @@ import {
   generateTwoFactorToken,
   generateVerificationToken
 } from "@/lib/tokens";
-import prisma from '@/lib/db';
+import prisma from '@/lib/prisma/db';
 import { SignInSchema } from '@/schema';
 import { getUserByEmail } from '@/data/user';
 import { signIn as authSignIn } from '../auth';

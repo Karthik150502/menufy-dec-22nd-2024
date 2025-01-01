@@ -1,6 +1,6 @@
 'use server'
 import { getSession } from "@/auth/getSession"
-import prisma from "@/lib/db";
+import prisma from "@/lib/prisma/db";
 import { CategoryOptionsType } from "@/types/optionsProvider";
 
 export async function getCategories(restId: number | null | undefined): Promise<CategoryOptionsType> {

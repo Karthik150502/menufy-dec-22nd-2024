@@ -1,9 +1,9 @@
 'use server'
 
 import { getSession } from "@/auth/getSession"
-import prisma from "@/lib/db";
+import prisma from "@/lib/prisma/db";
 
-export async function getDishes(restId: number, catId: number) {
+export async function getDishes(restId: number, catId: string) {
     const session = await getSession();
     if (!session?.user) {
         throw new Error("Unauthenticated")
@@ -17,6 +17,7 @@ export async function getDishes(restId: number, catId: number) {
                 id: catId,
             },
         },
+        orderBy: [{ createdAt: "desc" }],
         include: {
             category: {
                 select: {
@@ -25,5 +26,6 @@ export async function getDishes(restId: number, catId: number) {
             }
         }
     })
+
     return res;
 }

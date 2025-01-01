@@ -3,7 +3,7 @@
 import * as z from 'zod';
 import bcrypt, { compare } from 'bcryptjs';
 
-import prisma from '@/lib/db';
+import prisma from '@/lib/prisma/db';
 import { update } from '@/auth';
 import { getUserById } from '@/data/user';
 import { UpdatePasswordSchema } from '@/schema';

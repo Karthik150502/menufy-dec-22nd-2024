@@ -1,11 +1,12 @@
 import { UserRole } from '@prisma/client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { AuthOptions } from 'next-auth';
-import prisma from '@/lib/db';
+import prisma from '@/lib/prisma/db';
 import authConfig from './auth.config';
 import { getUserById } from '@/data/user';
 import { getAccountByUserId } from '@/data/account';
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
+import { initializeUser } from '@/actions/initializeUser';
 
 export const authOptions: AuthOptions = {
     pages: {
@@ -30,25 +31,20 @@ export const authOptions: AuthOptions = {
             if (account?.provider !== 'credentials') {
                 return true;
             }
-
-            const existingUser = await getUserById(user.id);
-
             // Prevent unverified email sign in
+            const existingUser = await getUserById(user.id);
             if (!existingUser?.emailVerified) {
                 return false;
             }
-
             // Check if 2FA enabled
             if (existingUser.isTwoFactorEnabled) {
                 const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
                     existingUser.id
                 );
-
                 // Prevent unconfirmed 2FA sign in
                 if (!twoFactorConfirmation) {
                     return false;
                 }
-
                 // Delete 2FA confirmation for next sign in
                 await prisma.twoFactorConfirmation.delete({
                     where: {
@@ -56,7 +52,6 @@ export const authOptions: AuthOptions = {
                     }
                 });
             }
-
             return true;
         },
         async session({ token, session }) {
@@ -90,6 +85,10 @@ export const authOptions: AuthOptions = {
 
             if (!existingUser) {
                 return token;
+            }
+
+            if (!existingUser.userDataInitialized) {
+                initializeUser(existingUser)
             }
 
             const existingAccount = await getAccountByUserId(existingUser.id);

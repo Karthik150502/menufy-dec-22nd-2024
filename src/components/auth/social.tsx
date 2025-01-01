@@ -19,6 +19,7 @@ export function Social() {
     signIn(provider, {
       callbackUrl: callbackUrl || Env.DEFAULT_SIGNIN_REDIRECT
     });
+    localStorage.removeItem("menufy/active-rest")
   };
 
   return (

@@ -1,6 +1,6 @@
 'use server'
 import { getSession } from "@/auth/getSession"
-import prisma from "@/lib/db";
+import prisma from "@/lib/prisma/db";
 
 export async function getAllOptions() {
     const session = await getSession();

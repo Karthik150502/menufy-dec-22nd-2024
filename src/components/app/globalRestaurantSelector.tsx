@@ -1,6 +1,5 @@
 "use client"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Check, ChevronsUpDown, HomeIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Command,
@@ -20,10 +19,9 @@ import { useMenufyOptions } from "@/providers/optionsProvider"
 import { useRecoilState } from 'recoil'
 import { SelectedRestaurant } from '@/store/recoil/restAtom'
 import LoaderCmp from "./loader"
-import { useRouter } from "next/navigation"
+import { setLS } from "@/lib/client-utils"
 export function GlobalRestaurantSelc() {
     const [open, setOpen] = useState(false);
-    const router = useRouter()
     const [value, setValue] = useState("");
     const options = useMenufyOptions();
     const [label, setLabel] = useState("");
@@ -35,14 +33,13 @@ export function GlobalRestaurantSelc() {
             setLabel(name)
             setValue(`${id}`)
         }
-    }, [selcRest])
+    }, [selcRest, options])
 
     const setSelectedRest = (id: number, name: string) => {
-        window.localStorage.setItem("menufy/active-rest", `${id}:${name}`);
+        setLS("menufy/active-rest", `${id}:${name}`);
         setSelcRest({
             id, name
         })
-        router.push("/dashboard")
     }
 
     return (
@@ -56,7 +53,7 @@ export function GlobalRestaurantSelc() {
                 >
                     {label}
                     {
-                        options?.restaurants ? <ChevronsUpDown className="opacity-50" /> : <LoaderCmp />
+                        options?.restaurants ? <HomeIcon className="opacity-50" /> : <LoaderCmp />
                     }
                 </Button>
 
@@ -73,21 +70,16 @@ export function GlobalRestaurantSelc() {
                                     value={rest.name}
                                     onSelect={(currentValue) => {
                                         setOpen(false)
-                                        console.log({
-                                            currentValue,
-                                            value
-                                        })
                                         setValue(currentValue === value ? "" : currentValue)
                                         setSelectedRest(rest.id, rest.name)
                                     }}
                                 >
                                     {rest.name}
-                                    <Check
-                                        className={cn(
-                                            "ml-auto",
-                                            value === `${rest.id}` ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
+                                    {
+                                        value === `${rest.id}` && <Check
+                                            className={"ml-auto"}
+                                        />
+                                    }
                                 </CommandItem>
                             ))}
                         </CommandGroup>

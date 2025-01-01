@@ -3,7 +3,7 @@
 import * as z from 'zod';
 import bcrypt from 'bcryptjs';
 
-import prisma from '@/lib/db';
+import prisma from '@/lib/prisma/db';
 import { SignUpSchema } from '@/schema';
 import { getUserByEmail } from '@/data/user';
 import { sendVerificationEmail } from '@/lib/mail';
@@ -47,7 +47,6 @@ export async function signUp(values: z.infer<typeof SignUpSchema>) {
     newUser.email,
     verificationToken.token
   );
-
   return {
     success: 'Sign up successful. Check your email to verify.'
   };

@@ -7,7 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <>
-      <div className='h-screen min-h-screen overflow-auto flex items-start justify-center py-8 px-4 md:px-0'>
+      <div className='h-screen min-h-screen overflow-auto flex items-start justify-center py-8 px-4 md:px-0 scrollbar'>
         {children}
       </div>
       <Footer />

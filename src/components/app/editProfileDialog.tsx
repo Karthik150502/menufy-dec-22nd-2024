@@ -131,8 +131,8 @@ export default function EditProfileDialog() {
                                 )}
                             />
                             <div className='w-full flex items-center justify-center gap-2 py-2'>
-                                <Button type="button" variant={"outline"} onClick={() => setOpen(false)}>Cancel</Button>
-                                <Button type="submit">Submit</Button>
+                                <Button type="button" className='w-full' variant={"outline"} onClick={() => setOpen(false)}>Cancel</Button>
+                                <Button type="submit" className='w-full'>Submit</Button>
                             </div>
                         </div>
                     </form>

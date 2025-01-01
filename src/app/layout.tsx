@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/providers/themeProvider";
 import NextAuthSessisonProvider from "@/providers/nextAuthSessisonProvider";
 import { getSession } from "@/auth/getSession";
 import QueryProvider from "@/providers/queryClient";
-import MenufyOptsProvider from "@/providers/optionsProvider";
 import RecoilProvider from "@/providers/recoilProvider";
 import { Toaster } from "sonner";
 
@@ -36,11 +35,9 @@ export default async function RootLayout({
                 enableSystem
                 disableTransitionOnChange
               >
-                <MenufyOptsProvider>
-                  <NextTopLoader color='#961D96' showSpinner={false} />
-                  {children}
-                  <Toaster richColors />
-                </MenufyOptsProvider>
+                <NextTopLoader color='#961D96' showSpinner={false} />
+                {children}
+                <Toaster />
               </ThemeProvider>
             </NextAuthSessisonProvider>
           </QueryProvider>

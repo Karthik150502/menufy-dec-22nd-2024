@@ -38,7 +38,7 @@ export class S3Handler implements S3 {
     public static async uploadObject(data: S3UploadParams): Promise<string> {
         const fileKey = data.folder + data.key
         const params = {
-            Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME as string,
+            Bucket: Env.AWS_S3_BUCKET_NAME,
             Key: fileKey,
             Body: data.body,
         }
@@ -48,7 +48,7 @@ export class S3Handler implements S3 {
 
     public static async deletObject(fileKey: string): Promise<void | true> {
         const params = {
-            Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME as string,
+            Bucket: Env.AWS_S3_BUCKET_NAME as string,
             Key: fileKey,
         }
         try {

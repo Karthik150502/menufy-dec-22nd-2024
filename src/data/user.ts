@@ -1,4 +1,4 @@
-import prisma from '@/lib/db';
+import prisma from '@/lib/prisma/db';
 
 export async function getUserByEmail(email: string) {
     try {
@@ -21,7 +21,6 @@ export async function getUserById(id: string) {
                 id
             }
         });
-
         return user;
     } catch {
         return null;

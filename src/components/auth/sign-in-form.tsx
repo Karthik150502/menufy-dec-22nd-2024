@@ -66,6 +66,7 @@ export function SignInForm() {
           if (data?.twoFactor) {
             setShowTwoFactor(true);
           }
+          window.localStorage.delete("menufy/active-rest")
         })
         .catch(() => setError('Oops! Something went wrong.'));
     });

@@ -15,7 +15,7 @@ export async function sendVerificationEmail(
 ) {
   const verifyLink = `${domain}/auth/email-verification?token=${token}`;
 
-  let response = await resend.emails.send({
+  const response = await resend.emails.send({
     from: 'karthikrdy150502@gmail.com',
     to: [email],
     subject: 'Email Verification',

@@ -1,4 +1,4 @@
-import prisma from '@/lib/db';
+import prisma from '@/lib/prisma/db';
 
 export async function getVerificationTokenByToken(token: string) {
   try {

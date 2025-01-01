@@ -25,6 +25,25 @@ body {
   /* Firefox */
 }
 
+
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background-color: rgba(61, 61, 61, 0.241);
+}
+.scrollbar::-webkit-scrollbar-track {
+  background-color: rgba(61, 61, 61, 0.241);
+  border-radius: 4px;
+}
+.scrollbar::-webkit-scrollbar-thumb{
+  border-radius: 4px;
+}
+.scrollbar::-webkit-scrollbar-thumb{
+  width: 8px;
+  background-color: rgba(103, 101, 101, 0.218);
+}
+
+
+
 @layer base {
   
 

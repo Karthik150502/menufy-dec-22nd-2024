@@ -1,6 +1,6 @@
 'use server';
 
-import prisma from '@/lib/db';
+import prisma from '@/lib/prisma/db';
 import { getUserById } from '@/data/user';
 import { currentUser } from '@/auth/getUserData';
 import { getVerificationTokenByUserId } from '@/data/verification-token';

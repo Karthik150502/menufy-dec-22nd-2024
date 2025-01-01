@@ -24,7 +24,7 @@ export default function TooltipWrapper({ content, children, side = "top" }: Prop
                 <TooltipTrigger asChild>
                     {children}
                 </TooltipTrigger>
-                <TooltipContent side={side} className='text-xs'>
+                <TooltipContent side={side} className='text-[10px] font-thin'>
                     {content}
                 </TooltipContent>
             </Tooltip>
