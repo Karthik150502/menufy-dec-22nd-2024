@@ -17,7 +17,7 @@ export async function getDishes(restId: number, catId: string) {
                 id: catId,
             },
         },
-        orderBy: [{ createdAt: "desc" }],
+        orderBy: [{ updatedAt: "desc" }],
         include: {
             category: {
                 select: {

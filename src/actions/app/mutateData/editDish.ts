@@ -2,7 +2,7 @@
 
 import { getSession } from "@/auth/getSession";
 import prisma from "@/lib/prisma/db";
-import { DishCreateSchema, DishEditType } from "@/schema/dish/create";
+import { DishEditSchema, DishEditType } from "@/schema/dish/create";
 
 
 export async function editDish(id: string, values: DishEditType) {
@@ -10,7 +10,7 @@ export async function editDish(id: string, values: DishEditType) {
     if (!session?.user) {
         throw new Error("Unauthenticated")
     }
-    const { data, success } = DishCreateSchema.safeParse(values)
+    const { data, success } = DishEditSchema.safeParse(values)
     if (!success) {
         throw new Error("Invalid values.")
     }

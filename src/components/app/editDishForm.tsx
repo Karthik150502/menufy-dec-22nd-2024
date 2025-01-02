@@ -25,6 +25,8 @@ import { toast } from "sonner";
 import { useInvalidateQueries } from '@/hooks/use-query-invalidate';
 import { editDish } from '@/actions/app/mutateData/editDish';
 import ImageUploader from './imageUploader';
+import { getS3ImageKey } from '@/lib/utils';
+import { S3Handler } from '@/lib/s3/s3-main';
 
 export default function EditDishForm({
     dish,
@@ -45,7 +47,7 @@ export default function EditDishForm({
             categoryId: dish.categoryId,
             restaurantId: dish.restaurantId,
             status: dish.status,
-            ...(dish.image && { image: dish.image as string })
+            ...(dish.image && { image: dish.image })
         }
     });
 
@@ -53,16 +55,33 @@ export default function EditDishForm({
         mutationKey: ["dish", "edit"],
         mutationFn: async (data: {
             values: DishEditType,
-            id: string
+            id: string,
+            imageFile?: File | null
         }) => {
-            await editDish(data.id, data.values)
+            let image;
+            const { imageFile } = data;
+            if (imageFile) {
+                if (dish.image) {
+                    const imageKey = getS3ImageKey(dish.image);
+                    console.log("imageKey = ", imageKey);
+                    await S3Handler.deletObject(imageKey);
+                }
+                const params = {
+                    body: imageFile as File,
+                    folder: "dishes/",
+                    key: `dish-${data.values.name}-${Date.now()}.jpg`
+                };
+                image = await S3Handler.uploadObject(params);
+            }
+            await editDish(data.id, { ...data.values, image });
         },
         onSuccess: () => {
             toast.success("Edited data", { id: "edit-item" });
             invalidateQueries(["dishes", rest?.id, dish.categoryId])
             setDialogOpen(false);
         },
-        onError: () => {
+        onError: (error) => {
+            console.log("error: ", error)
             toast.error("Error occured while editing data", { id: "edit-item" })
             setDialogOpen(false);
         }
@@ -71,8 +90,9 @@ export default function EditDishForm({
     const onSubmit = (values: DishEditType) => {
         toast.loading("Editing data", { id: "edit-item" })
         createdish.mutate({
-            values: values,
-            id: dish.id
+            values: { ...values, },
+            id: dish.id,
+            imageFile: form.getValues("imageFile")
         })
     }
     return (

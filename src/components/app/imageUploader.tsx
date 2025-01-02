@@ -10,7 +10,8 @@ import TooltipWrapper from './tooltipWrapper'
 
 type Props = {
     setFile: React.Dispatch<React.SetStateAction<File | null>>,
-    defaultImg?: string | null
+        ?: string | null,
+    // setImage: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export default function ImageUploader({ setFile, defaultImg }: Props) {
