@@ -36,7 +36,7 @@ export default function DishDeleteModal({
   const { isPending, mutate } = useMutation({
     mutationKey: ["delete-dish", id],
     mutationFn: async () => {
-      await axios.delete(`${Env.APP_URL}/api/v1/delete-dish?dishId=${id}`)
+      await axios.delete(`${Env.APP_URL}/api/v1/dish/delete?dishId=${id}`)
     },
     onSuccess: () => {
       toast.success(`${name} deleted.`, { id: "dish-delete" });
@@ -62,13 +62,14 @@ export default function DishDeleteModal({
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={isPending}
-            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            className="bg-gradient-to-bl from-red-600 via-red-400 to-red-900 text-primary-foreground [background-size:300%] animate-button-gradient"
             onClick={() => {
               toast.loading("Deleting the dish", { id: "dish-delete" })
               mutate()
             }}
-          >Confirm Delete</AlertDialogAction>
+          >
+            Confirm Delete
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

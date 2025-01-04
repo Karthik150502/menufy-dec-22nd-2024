@@ -14,5 +14,5 @@ export const flattenItems = (items: SidebarSingleItemType[]): ItemType[] => {
 };
 
 export const getS3ImageKey = (fileUrl: string) => {
-  return fileUrl.replace(`https://${Env.AWS_S3_BUCKET_NAME}.s3.${Env.AWS_S3_REGION_NAME}.amazonaws.com/`, ' ')
+  return fileUrl.replace(`https://${Env.AWS_S3_BUCKET_NAME}.s3.${Env.AWS_S3_REGION_NAME}.amazonaws.com/`, "")
 }

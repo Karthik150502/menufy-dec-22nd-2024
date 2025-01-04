@@ -1,9 +1,15 @@
 import { createDish } from "@/actions/app/mutateData/createDish";
 import { NextRequest, NextResponse } from "next/server";
+import { RedisRateLimiter } from "@/lib/rateLimiter/client";
 
 export async function POST(req: NextRequest) {
-    const rateLimitUnmet = true; //TODO: implement Ratelimiting, [20, 60]
-    if (!rateLimitUnmet) {
+
+    const ip = req.headers.get('x-forwarded-for');
+    const path = req.nextUrl.pathname;
+    const identifier = `${path}-${ip}`
+    const rateLimit = await RedisRateLimiter.rateLimit(identifier as string, 5, 60);
+
+    if (!rateLimit.success) {
         return NextResponse.json({ message: 'Too many requests, please try again later.' }, { status: 429, });
     }
     const values = await req.json();

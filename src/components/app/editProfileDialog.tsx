@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -22,7 +21,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UpdateProfileSchema, UpdateProfileSchemaType } from '@/schema';
-import { z } from 'zod';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
@@ -30,17 +28,19 @@ import { Switch } from '../ui/switch';
 import { updateProfile } from '@/actions/update-profile';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import ProfileImageUploader from './profileImageUploader';
 export default function EditProfileDialog() {
     const user = useCurrentUser();
 
     const [open, setOpen] = useState<boolean>(false)
-    const form = useForm<z.infer<typeof UpdateProfileSchema>>({
+    const form = useForm<UpdateProfileSchemaType>({
         resolver: zodResolver(UpdateProfileSchema),
         defaultValues: {
             name: user?.name || '',
             email: user?.tempEmail ? user.tempEmail : user?.email ? user.email : '',
             role: user?.role || 'USER',
-            isTwoFactorEnabled: user?.isTwoFactorEnabled || false
+            isTwoFactorEnabled: user?.isTwoFactorEnabled || false,
+            image: user?.image
         }
     });
 
@@ -62,7 +62,7 @@ export default function EditProfileDialog() {
         }
     })
 
-    const onSubmit = (values: z.infer<typeof UpdateProfileSchema>) => {
+    const onSubmit = (values: UpdateProfileSchemaType) => {
         toast.loading("Updating the profile", { id: "profile=update" })
         updateMutation.mutate(values)
     };
@@ -82,6 +82,24 @@ export default function EditProfileDialog() {
                 <Form {...form}>
                     <form action="" className='w-full h-full' onSubmit={form.handleSubmit(onSubmit)}>
                         <div className='w-full h-full flex flex-col justify-center items-center gap-2'>
+                            <FormField
+                                control={form.control}
+                                name="imageFile"
+                                render={({ field }) => (
+                                    <FormItem className='w-full flex items-center justify-center'>
+                                        <FormControl>
+                                            <ProfileImageUploader
+                                                name={user?.name}
+                                                setImage={(url: string) => {
+                                                    form.setValue("image", url);
+                                                }}
+                                                image={form.getValues("image")}
+                                                setFile={field.onChange} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name='name'

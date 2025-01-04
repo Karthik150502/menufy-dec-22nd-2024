@@ -14,6 +14,10 @@ export class Env {
     static readonly AWS_S3_BUCKET_NAME: string = process.env.NEXT_PUBLIC_S3_BUCKET_NAME! as string;
     static readonly AWS_S3_REGION_NAME: string = process.env.NEXT_PUBLIC_S3_REGION_NAME! as string;
     static readonly APP_URL: string = this.DEV ? "http://localhost:3000" : process.env.BASE_URL! as string;
+    static readonly REDIS_HOST: string = process.env.REDIS_HOST! as string;
+    static readonly REDIS_PASSWORD: string = process.env.REDIS_PASSWORD! as string;
+    static readonly REDIS_PORT = parseInt(process.env.REDIS_PORT! as string);
+    static readonly DEFAULT_DISH_IMAGE: string = "https://menufy-s3.s3.eu-north-1.amazonaws.com/assets/icons8-dish-96.png"
 }
 
 

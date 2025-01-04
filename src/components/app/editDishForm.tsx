@@ -23,10 +23,9 @@ import TooltipWrapper from "./tooltipWrapper";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import { useInvalidateQueries } from '@/hooks/use-query-invalidate';
-import { editDish } from '@/actions/app/mutateData/editDish';
 import ImageUploader from './imageUploader';
-import { getS3ImageKey } from '@/lib/utils';
-import { S3Handler } from '@/lib/s3/s3-main';
+import axios from 'axios';
+import { uploadDishImageS3 } from '@/actions/client/uploadToS3';
 
 export default function EditDishForm({
     dish,
@@ -58,22 +57,17 @@ export default function EditDishForm({
             id: string,
             imageFile?: File | null
         }) => {
-            let image;
             const { imageFile } = data;
-            if (imageFile) {
-                if (dish.image) {
-                    const imageKey = getS3ImageKey(dish.image);
-                    console.log("imageKey = ", imageKey);
-                    await S3Handler.deletObject(imageKey);
-                }
-                const params = {
-                    body: imageFile as File,
-                    folder: "dishes/",
-                    key: `dish-${data.values.name}-${Date.now()}.jpg`
-                };
-                image = await S3Handler.uploadObject(params);
-            }
-            await editDish(data.id, { ...data.values, image });
+            const image = await uploadDishImageS3({
+                imageFile,
+                dishImage: dish.image,
+                updatedImage: data.values.image,
+                categoryId: data.values.categoryId
+            })
+            await axios.post(`http://localhost:3000/api/v1/dish/edit?dishId=${dish.id}`, {
+                ...data.values,
+                image
+            })
         },
         onSuccess: () => {
             toast.success("Edited data", { id: "edit-item" });
@@ -104,7 +98,9 @@ export default function EditDishForm({
                     render={({ field }) => (
                         <FormItem className="w-full flex flex-col items-center justify-center">
                             <FormControl>
-                                <ImageUploader defaultImg={dish.image} setFile={field.onChange} />
+                                <ImageUploader setImage={(url: string) => {
+                                    form.setValue("image", url);
+                                }} image={form.getValues("image")} setFile={field.onChange} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -187,7 +183,7 @@ export default function EditDishForm({
                                 </FormControl>
                             </div>
                             <FormDescription className='text-xs'>
-                                Select the status of the item, from AVAILABLE, UNAVAILABLE, or INPREPARATION.
+                                Select the status of the item, from AVAILABLE, UNAVAILABLE,INPREPARATION or ARCHIVED.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

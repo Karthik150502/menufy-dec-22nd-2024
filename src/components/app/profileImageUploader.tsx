@@ -3,19 +3,19 @@
 import React, { useRef, useState } from 'react'
 import { Input } from '../ui/input'
 import Image from 'next/image'
-import { Camera, Trash } from 'lucide-react'
+import { Pen, Trash } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Compressor } from '@/lib/compress';
 import TooltipWrapper from './tooltipWrapper'
-import { Env } from '@/lib/config'
 
 type Props = {
     setFile: (file: File | null) => void,
     image?: string | null,
-    setImage: (url: string) => void
+    setImage: (url: string) => void,
+    name?: string | null
 }
 
-export default function ImageUploader({ setFile, image, setImage }: Props) {
+export default function ProfileImageUploader({ setFile, image, setImage, name }: Props) {
 
     const imageRef = useRef<HTMLImageElement | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,9 +23,22 @@ export default function ImageUploader({ setFile, image, setImage }: Props) {
     return (
         <div className='w-[200px] h-[150px] border rounded-lg flex flex-col items-center justify-between gap-2 py-4 relative'>
             {
-                <div className='w-[150px] h-[100px] overflow-hidden rounded-xl'>
-                    <Image ref={imageRef} src={image ? image : Env.DEFAULT_DISH_IMAGE} height={150} width={100} alt={"Profile Image"} className='object-cover w-full h-full border rounded-lg'
-                    />
+                <div className='w-full relative flex flex-col items-center justify-canter gap-2'>
+                    <Image ref={imageRef} alt={name ? name : "User profile pic"} src={image ? image : "https://cdn-icons-png.flaticon.com/128/847/847969.png"} height={100} width={100} className='rounded-full h-[100px] w-[100px]' />
+                    <TooltipWrapper content={image ? "Delete image" : "Click to upload"}>
+                        {
+                            image ? <Button type="button" disabled={isLoading} variant={"outline"} size={"icon"} className='rounded-full absolute -bottom-6' onClick={() => {
+                                setImage("")
+                                setFile(null)
+                            }}>
+                                <Trash className="stroke-red-500" size={15} strokeWidth={1} />
+                            </Button> : <Button type="button" variant={"outline"} size={"icon"} className='rounded-full absolute -bottom-6' onClick={() => {
+                                inputRef.current?.click()
+                            }}>
+                                <Pen size={15} strokeWidth={1} />
+                            </Button>
+                        }
+                    </TooltipWrapper>
                 </div>
             }
             <Input ref={inputRef} className='absolute hidden' type="file" onChange={async (e) => {
@@ -46,21 +59,6 @@ export default function ImageUploader({ setFile, image, setImage }: Props) {
                     }
                 }
             }} />
-
-            <TooltipWrapper content={image ? "Delete image" : "Click to upload"}>
-                {
-                    image ? <Button type="button" disabled={isLoading} variant={"outline"} size={"icon"} className='rounded-full absolute -bottom-6' onClick={() => {
-                        setImage("")
-                        setFile(null)
-                    }}>
-                        <Trash className="stroke-red-500" size={20} strokeWidth={1} />
-                    </Button> : <Button type="button" variant={"outline"} size={"icon"} className='rounded-full absolute -bottom-6' onClick={() => {
-                        inputRef.current?.click()
-                    }}>
-                        <Camera size={20} strokeWidth={1} />
-                    </Button>
-                }
-            </TooltipWrapper>
         </div>
     )
 }

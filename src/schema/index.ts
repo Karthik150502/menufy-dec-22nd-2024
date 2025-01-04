@@ -51,6 +51,11 @@ export const ResetPasswordSchema = z
         path: ['confirm']
     });
 
+
+type ImageFile = {
+    imageFile?: File
+}
+
 export const UpdateProfileSchema = z.object({
     name: z.string().min(1, {
         message: 'Name is required.'
@@ -58,12 +63,13 @@ export const UpdateProfileSchema = z.object({
     email: z.string().email({
         message: 'Valid email is required.'
     }),
+    image: z.string().optional().nullable(),
     role: z.enum([UserRole.ADMIN, UserRole.USER]),
     isTwoFactorEnabled: z.boolean()
 });
 
 
-export type UpdateProfileSchemaType = z.infer<typeof UpdateProfileSchema>;
+export type UpdateProfileSchemaType = z.infer<typeof UpdateProfileSchema> & ImageFile;
 
 export const UpdatePasswordSchema = z
     .object({

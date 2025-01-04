@@ -14,7 +14,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { DishCreateSchema, DishCreateType } from "@/schema/dish/create"
 import { useMutation } from "@tanstack/react-query"
-// import { createDish } from "@/actions/app/mutateData/createDish"
 import { Input } from "../ui/input";
 import { useRecoilValue } from "recoil";
 import { SelectedRestaurant } from "@/store/recoil/restAtom";
@@ -26,7 +25,7 @@ import { toast } from "sonner";
 import { useInvalidateQueries } from '@/hooks/use-query-invalidate';
 import ImageUploader from './imageUploader';
 import axios from "axios"
-import { S3Handler } from '@/lib/s3/s3-main';
+import { uploadDishImageS3 } from '@/actions/client/uploadToS3';
 export default function CreateDishForm({
     categoryId,
     setDialogOpen
@@ -47,6 +46,7 @@ export default function CreateDishForm({
             categoryId,
             restaurantId: rest?.id,
             status: DishStatus.AVAILABLE,
+            image: ""
         }
     });
 
@@ -56,18 +56,13 @@ export default function CreateDishForm({
             values: DishCreateType,
             image?: File
         }) => {
-            let image = ""
-            if (data.image) {
-                const params = {
-                    body: data.image as File,
-                    folder: "dishes/",
-                    key: `dish-${data.values.name}-${Date.now()}.jpg`
-                }
-                image = await S3Handler.uploadObject(params)
-            }
-            await axios.post("http://localhost:3000/api/v1/create-dish", {
+            const image = await uploadDishImageS3({
+                imageFile: data.image,
+                categoryId: data.values.categoryId
+            })
+            await axios.post("http://localhost:3000/api/v1/dish/create", {
                 ...data.values,
-                image: image ? image : null
+                image
             })
         },
         onSuccess: () => {
@@ -76,8 +71,12 @@ export default function CreateDishForm({
             setDialogOpen(false);
         },
         onError: (error) => {
-            console.log(error);
-            toast.error("Error occured while creating item", { id: "creating-item" })
+            console.error(error);
+            if (error instanceof Error) {
+                toast.error(error.message, { id: "creating-item" });
+            } else {
+                toast.error("Error occured while creating item", { id: "creating-item" });
+            }
             setDialogOpen(false);
         }
     })
@@ -95,7 +94,9 @@ export default function CreateDishForm({
                     render={({ field }) => (
                         <FormItem className="w-full flex flex-col items-center justify-center">
                             <FormControl>
-                                <ImageUploader  setFile={field.onChange} />
+                                <ImageUploader setImage={(url: string) => {
+                                    form.setValue("image", url)
+                                }} setFile={field.onChange} image={form.getValues("image")} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

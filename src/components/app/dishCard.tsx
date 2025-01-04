@@ -6,6 +6,7 @@ import TooltipWrapper from './tooltipWrapper'
 import DishStatus from './status'
 import DishOptions from './dishOptions'
 import Image from 'next/image'
+import { Env } from '@/lib/config'
 export default function DishCard({
     dish
 }: {
@@ -18,7 +19,7 @@ export default function DishCard({
         <div className='border text-center rounded-lg flex items-center justify-between shadow-lg p-3 h-[185px] gap-2 py-4'>
             <div className='w-full h-full flex flex-col items-start justify-between gap-2'>
                 <div className='w-[150px] h-[100px] border rounded-lg'>
-                    <Image src={dish.image ? dish.image : "https://cdn-icons-png.flaticon.com/128/18567/18567001.png"} height={150} width={100} alt={"Profile Image"} className='object-cover w-full h-full border rounded-lg'
+                    <Image src={dish.image ? dish.image : Env.DEFAULT_DISH_IMAGE} height={150} width={100} alt={"Dish Image"} className='object-cover w-full h-full border rounded-lg'
                     />
                 </div>
                 <TooltipWrapper content={dish.name}>

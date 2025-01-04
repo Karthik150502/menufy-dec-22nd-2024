@@ -20,6 +20,7 @@ export async function editDish(id: string, values: DishEditType) {
         },
         data: {
             ...data,
+            image: data.image ? data.image : null,
             price: data.price ? parseInt(data.price) : 0
         }
     })

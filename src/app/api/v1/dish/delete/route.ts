@@ -8,13 +8,13 @@ export async function DELETE(req: NextRequest) {
     }
     const dishId = req.nextUrl.searchParams.get("dishId");
     if (!dishId) {
-        return NextResponse.json({ message: "Invalid id" }, { status: 404 });
+        return NextResponse.json({ message: "Invalid Id/ Id not found." }, { status: 404 });
     }
     try {
         await deleteDish(dishId);
     } catch (e) {
         if (e instanceof Error) {
-            return NextResponse.json({ message: e.message }, { status: 400   });
+            return NextResponse.json({ message: `Internal server error: ${e.message}` }, { status: 400 });
         }
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });
     }

@@ -52,7 +52,7 @@ export class S3Handler implements S3 {
             Key: fileKey,
         }
         try {
-            await S3Handler.s3Instance.deleteObject(params).promise()
+            await S3Handler.s3Instance.deleteObject(params).promise();
             return true
         } catch (e) {
             console.log("Error from S3 Handler: ", e)

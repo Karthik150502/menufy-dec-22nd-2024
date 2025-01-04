@@ -3,7 +3,6 @@
 import * as z from 'zod';
 
 import prisma from '@/lib/prisma/db';
-import { update } from '@/auth';
 import { UpdateProfileSchema } from '@/schema';
 import { sendVerificationEmail } from '@/lib/mail';
 import { currentUser } from '@/auth/getUserData';

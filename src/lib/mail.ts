@@ -16,7 +16,7 @@ export async function sendVerificationEmail(
   const verifyLink = `${domain}/auth/email-verification?token=${token}`;
 
   const response = await resend.emails.send({
-    from: 'karthikrdy150502@gmail.com',
+    from: 'decimalight.in@resend.dev',
     to: [email],
     subject: 'Email Verification',
     react: EmailVerification({ name, verifyLink })
@@ -32,7 +32,7 @@ export async function sendPasswordResetEmail(
   const resetLink = `${domain}/auth/reset-password?token=${token}`;
 
   await resend.emails.send({
-    from: 'karthikrdy150502@gmail.com',
+    from: 'decimalight.in',
     to: [email],
     subject: 'Password Reset',
     react: PasswordReset({ name, resetLink })
