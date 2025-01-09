@@ -23,7 +23,7 @@ export default function CreateDishModal({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"outline"}>
+                <Button variant={"outline"} size={"sm"} className="text-xs">
                     <Plus size={18} />
                     {buttonLabel ?? "Add Item/ Dish"}
                 </Button>

@@ -29,8 +29,12 @@ import { updateProfile } from '@/actions/update-profile';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ProfileImageUploader from './profileImageUploader';
+import { uploadProfileImageS3 } from '@/actions/client/uploadProfileImage';
+import { useSession } from 'next-auth/react';
 export default function EditProfileDialog() {
     const user = useCurrentUser();
+    const { update } = useSession()
+    console.log("User profile = ", user);
 
     const [open, setOpen] = useState<boolean>(false)
     const form = useForm<UpdateProfileSchemaType>({
@@ -40,22 +44,38 @@ export default function EditProfileDialog() {
             email: user?.tempEmail ? user.tempEmail : user?.email ? user.email : '',
             role: user?.role || 'USER',
             isTwoFactorEnabled: user?.isTwoFactorEnabled || false,
-            image: user?.image
+            ...(user?.image && { image: user.image })
         }
     });
 
 
     const updateMutation = useMutation({
-        mutationKey: [""],
-        mutationFn: async (values: UpdateProfileSchemaType) => {
-            await updateProfile(values)
+        mutationKey: ["edit-profile", user?.image],
+        mutationFn: async ({ values, imageFile }: { values: UpdateProfileSchemaType, imageFile?: File | null }) => {
+
+            const { image: updatedImage } = values;
+            const image = (await uploadProfileImageS3({
+                imageFile,
+                profileImage: user?.image,
+                updatedImage,
+                userId: user?.id
+            }))[0];
+
+            return await updateProfile({ ...values, image })
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             toast.success("Updated the profile", { id: "profile=update" })
             setOpen(false)
-
+            const { updatedUser } = data;
+            update({
+                name: updatedUser.name,
+                isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
+                role: updatedUser.role,
+                image: updatedUser.image
+            })
         },
-        onError: () => {
+        onError: (error) => {
+            console.log("Error: ", error)
             toast.error("Error while updating the profile", { id: "profile=update" })
             setOpen(false)
 
@@ -64,7 +84,10 @@ export default function EditProfileDialog() {
 
     const onSubmit = (values: UpdateProfileSchemaType) => {
         toast.loading("Updating the profile", { id: "profile=update" })
-        updateMutation.mutate(values)
+        updateMutation.mutate({
+            values,
+            imageFile: form.getValues("imageFile")
+        })
     };
 
 

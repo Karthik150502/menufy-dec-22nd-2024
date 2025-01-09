@@ -24,8 +24,17 @@ export default function ProfileImageUploader({ setFile, image, setImage, name }:
         <div className='w-[200px] h-[150px] border rounded-lg flex flex-col items-center justify-between gap-2 py-4 relative'>
             {
                 <div className='w-full relative flex flex-col items-center justify-canter gap-2'>
-                    <Image ref={imageRef} alt={name ? name : "User profile pic"} src={image ? image : "https://cdn-icons-png.flaticon.com/128/847/847969.png"} height={100} width={100} className='rounded-full h-[100px] w-[100px]' />
-                    <TooltipWrapper content={image ? "Delete image" : "Click to upload"}>
+                    <Image
+                        ref={imageRef}
+                        alt={name ? name : "User profile pic"}
+                        src={image ? image : "https://cdn-icons-png.flaticon.com/128/847/847969.png"}
+                        height={100}
+                        width={100}
+                        className='rounded-full h-[100px] w-[100px]'
+                    />
+                    <TooltipWrapper
+                        content={image ? "Delete image" : "Click to upload"}
+                    >
                         {
                             image ? <Button type="button" disabled={isLoading} variant={"outline"} size={"icon"} className='rounded-full absolute -bottom-6' onClick={() => {
                                 setImage("")
@@ -49,7 +58,7 @@ export default function ProfileImageUploader({ setFile, image, setImage, name }:
                         const fileName = file.name;
                         const fileType = file.type;
                         const url = await Compressor.compressImage(e.target.files[0]);
-                        setImage(url)
+                        setImage(url)   
                         const updatedFile = await Compressor.urlToFile(url, fileName, fileType);
                         setFile(updatedFile)
                     } catch (e) {
@@ -59,6 +68,6 @@ export default function ProfileImageUploader({ setFile, image, setImage, name }:
                     }
                 }
             }} />
-        </div>
+        </div >
     )
 }

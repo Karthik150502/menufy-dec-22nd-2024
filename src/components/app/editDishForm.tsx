@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { useInvalidateQueries } from '@/hooks/use-query-invalidate';
 import ImageUploader from './imageUploader';
 import axios from 'axios';
-import { uploadDishImageS3 } from '@/actions/client/uploadToS3';
+import { uploadDishImageS3 } from '@/actions/client/uploadItemImageToS3';
 
 export default function EditDishForm({
     dish,
@@ -58,15 +58,17 @@ export default function EditDishForm({
             imageFile?: File | null
         }) => {
             const { imageFile } = data;
-            const image = await uploadDishImageS3({
+            const [image, imageKey] = await uploadDishImageS3({
                 imageFile,
                 dishImage: dish.image,
                 updatedImage: data.values.image,
-                categoryId: data.values.categoryId
+                categoryId: data.values.categoryId,
+                imageKey: dish.imageKey
             })
-            await axios.post(`http://localhost:3000/api/v1/dish/edit?dishId=${dish.id}`, {
+            await axios.post(`api/v1/dish/edit?dishId=${dish.id}`, {
                 ...data.values,
-                image
+                image,
+                imageKey
             })
         },
         onSuccess: () => {
@@ -98,9 +100,12 @@ export default function EditDishForm({
                     render={({ field }) => (
                         <FormItem className="w-full flex flex-col items-center justify-center">
                             <FormControl>
-                                <ImageUploader setImage={(url: string) => {
-                                    form.setValue("image", url);
-                                }} image={form.getValues("image")} setFile={field.onChange} />
+                                <ImageUploader
+                                    setImage={(url: string) => {
+                                        form.setValue("image", url);
+                                    }}
+                                    image={form.getValues("image")}
+                                    setFile={field.onChange} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

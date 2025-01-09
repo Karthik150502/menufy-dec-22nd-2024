@@ -10,7 +10,6 @@ import { generateVerificationToken } from '@/lib/tokens';
 import { getUserByEmail, getUserById } from '@/data/user';
 import { revalidatePath } from 'next/cache';
 
-
 export async function updateProfile(
   values: z.infer<typeof UpdateProfileSchema>
 ) {
@@ -48,19 +47,24 @@ export async function updateProfile(
     );
   }
 
+
+  const updatedUser = {
+    name: values.name,
+    tempEmail: user.isOAuth || !updateEmail ? undefined : values.email,
+    role: values.role,
+    isTwoFactorEnabled: user.isOAuth ? undefined : values.isTwoFactorEnabled,
+    image: values.image
+  }
   await prisma.user.update({
     where: {
       id: dbUser.id
     },
-    data: {
-      name: values.name,
-      tempEmail: user.isOAuth || !updateEmail ? undefined : values.email,
-      role: values.role,
-      isTwoFactorEnabled: user.isOAuth ? undefined : values.isTwoFactorEnabled
-    }
+    data: updatedUser
   });
 
   revalidatePath("/settings")
 
-  return !updateEmail ? 'Profile updated.' : 'Profile updated & verification email sent.'
+  return {
+    updatedUser, updateEmail: updateEmail ? 'Profile updated & verification email sent.' : 'Profile updated.'
+  }
 }

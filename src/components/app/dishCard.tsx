@@ -7,17 +7,39 @@ import DishStatus from './status'
 import DishOptions from './dishOptions'
 import Image from 'next/image'
 import { Env } from '@/lib/config'
-export default function DishCard({
-    dish
-}: {
+import { Checkbox } from '@/components/ui/checkbox'
+import { cn } from '@/lib/utils'
+
+
+type Props = {
     dish: Dish & {
         category: Pick<Category, "id" | 'name'>
-    }
-}) {
+    },
+    deleteItemActive: boolean,
+    checked: boolean,
+    onSelectDelete: (id: string) => void
+}
+export default function DishCard({
+    dish,
+    deleteItemActive,
+    checked,
+    onSelectDelete
+}: Props) {
+
+
+
 
     return (
-        <div className='border text-center rounded-lg flex items-center justify-between shadow-lg p-3 h-[185px] gap-2 py-4'>
+        <div className={cn('border text-center rounded-lg flex items-center justify-between shadow-lg p-3 h-[185px] gap-2 py-4', {
+            "cursor-pointer": deleteItemActive
+
+        })}
+            onClick={() => {
+                onSelectDelete(dish.id)
+            }}
+        >
             <div className='w-full h-full flex flex-col items-start justify-between gap-2'>
+
                 <div className='w-[150px] h-[100px] border rounded-lg'>
                     <Image src={dish.image ? dish.image : Env.DEFAULT_DISH_IMAGE} height={150} width={100} alt={"Dish Image"} className='object-cover w-full h-full border rounded-lg'
                     />
@@ -28,7 +50,9 @@ export default function DishCard({
             </div>
             <div className='w-full h-full flex flex-col items-center justify-between gap-2'>
                 <div className='w-full flex flex-col items-end justify-center gap-2'>
-                    <DishOptions dish={dish} />
+                    {
+                        deleteItemActive ? <Checkbox checked={checked} id="select-for-delete" className="w-5 h-5 rounded-lg border-2" /> : <DishOptions dish={dish} />
+                    }
                 </div>
                 <div className='w-full flex flex-col text-[10px] items-right justify-right cursor-pointer'>
                     <TooltipWrapper content={dish.description}>

@@ -13,6 +13,7 @@ export const DishCreateSchema = z.object({
     categoryId: z.string({ required_error: "Enter the categoryId" }),
     restaurantId: z.number({ required_error: "Enter the restaurantId" }),
     image: z.string().optional().nullable(),
+    imageKey: z.string().optional().nullable(),
     status: DishStatus,
 });
 
@@ -31,6 +32,7 @@ export const DishEditSchema = z.object({
     categoryId: z.string({ required_error: "Enter the categoryId" }),
     restaurantId: z.number({ required_error: "Enter the restaurantId" }),
     image: z.string().optional().nullable(),
+    imageKey: z.string().optional().nullable(),
     status: DishStatus,
 });
 

@@ -4,19 +4,25 @@ import { getSession } from "@/auth/getSession"
 import { S3Handler } from "@/lib/s3/s3-main";
 
 
-export async function deleteDish(id: string) {
+
+export async function deleteDish(ids: string[]) {
     const session = await getSession();
     if (!session?.user) {
         throw new Error("Unauthenticated")
     }
-    const dish = await prisma.dish.delete({
+    const dishes = await prisma.dish.findMany({
         where: {
-            id: id
+            id: {
+                in: ids
+            }
         }
     })
-    if (dish.imageKey) {
-        await S3Handler.deletObject(dish.imageKey)
-    }
+
+    dishes.forEach(async (item) => {
+        if (item.imageKey) {
+            await S3Handler.deletObject(item.imageKey)
+        }
+    })
 }
 
 

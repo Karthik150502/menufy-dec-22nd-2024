@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { signOut } from 'next-auth/react'
-import { Pen, Check, X } from "lucide-react"
+import { Check, X } from "lucide-react"
 import {
     Popover,
     PopoverContent,
@@ -23,8 +23,7 @@ export default function Profile() {
             <PopoverContent>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-2">
                     <div className='w-full relative flex flex-col items-center justify-canter gap-2'>
-                        <Image alt={user?.name ?? "User profile pic"} src={user?.image ?? "https://cdn-icons-png.flaticon.com/128/847/847969.png"} height={100} width={100} className='rounded-full border h-[100px] w-[100px]' />
-                        <Button className='h-8 w-8 flex items-center justify-center rounded-full absolute -bottom-3' variant={"outline"}><Pen size={15} className='stroke-muted-foreground' /></Button>
+                        <Image alt={user?.name ?? "User profile pic"} src={user?.image ? user.image : "https://cdn-icons-png.flaticon.com/128/847/847969.png"} height={100} width={100} className='rounded-full border h-[100px] w-[100px]' />
                     </div>
                     <div className='w-full flex flex-col items-start justify-canter gap-2'>
                         <p className='text-xl'>{user?.name}</p>

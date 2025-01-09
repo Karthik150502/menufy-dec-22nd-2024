@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { useInvalidateQueries } from '@/hooks/use-query-invalidate';
 import ImageUploader from './imageUploader';
 import axios from "axios"
-import { uploadDishImageS3 } from '@/actions/client/uploadToS3';
+import { uploadDishImageS3 } from '@/actions/client/uploadItemImageToS3';
 export default function CreateDishForm({
     categoryId,
     setDialogOpen
@@ -46,7 +46,7 @@ export default function CreateDishForm({
             categoryId,
             restaurantId: rest?.id,
             status: DishStatus.AVAILABLE,
-            image: ""
+            image: "",
         }
     });
 
@@ -56,13 +56,14 @@ export default function CreateDishForm({
             values: DishCreateType,
             image?: File
         }) => {
-            const image = await uploadDishImageS3({
+            const [image, imageKey] = await uploadDishImageS3({
                 imageFile: data.image,
-                categoryId: data.values.categoryId
+                categoryId: data.values.categoryId,
             })
-            await axios.post("http://localhost:3000/api/v1/dish/create", {
+            await axios.post("api/v1/dish/create", {
                 ...data.values,
-                image
+                image,
+                imageKey
             })
         },
         onSuccess: () => {

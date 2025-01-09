@@ -59,5 +59,19 @@ export class S3Handler implements S3 {
             throw new Error("Unable to delete the object")
         }
     }
+    public static async deleteObjects(fileKey: string): Promise<void | true> {
+        const params = {
+            Bucket: Env.AWS_S3_BUCKET_NAME as string,
+            Key: fileKey,
+        }
+        try {
+            // await S3Handler.s3Instance.deleteObject(params).promise();
+            await S3Handler.s3Instance.deleteObjects().promise();
+            return true
+        } catch (e) {
+            console.log("Error from S3 Handler: ", e)
+            throw new Error("Unable to delete the object")
+        }
+    }
 }
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useQueryClient } from "@tanstack/react-query"
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function useInvalidateQueries() {
     const queryClient = useQueryClient();
@@ -11,4 +11,16 @@ export function useInvalidateQueries() {
         })
     }, [queryClient])
     return cb;
+}
+
+export function useFetchQuerydata<T>(queryKey: (string | number | undefined)[]) {
+    const queryClient = useQueryClient();
+    const [data, setData] = useState<T>();
+    useEffect(() => {
+        if (queryClient) {
+            const state = queryClient.getQueryData<T, (string | number | undefined)[], T>(queryKey);
+            setData(state);
+        }
+    }, [queryClient, queryKey])
+    return data;
 }

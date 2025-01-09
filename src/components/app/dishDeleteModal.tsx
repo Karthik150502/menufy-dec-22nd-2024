@@ -10,7 +10,6 @@ import {
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog"
 import { useInvalidateQueries } from "@/hooks/use-query-invalidate"
-import { Env } from "@/lib/config"
 import { SelectedRestaurant } from "@/store/recoil/restAtom"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
@@ -36,7 +35,7 @@ export default function DishDeleteModal({
   const { isPending, mutate } = useMutation({
     mutationKey: ["delete-dish", id],
     mutationFn: async () => {
-      await axios.delete(`${Env.APP_URL}/api/v1/dish/delete?dishId=${id}`)
+      await axios.delete(`api/v1/dish/delete?dishId=${id}`)
     },
     onSuccess: () => {
       toast.success(`${name} deleted.`, { id: "dish-delete" });
@@ -62,7 +61,7 @@ export default function DishDeleteModal({
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            className="bg-gradient-to-bl from-red-600 via-red-400 to-red-900 text-primary-foreground [background-size:300%] animate-button-gradient"
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             onClick={() => {
               toast.loading("Deleting the dish", { id: "dish-delete" })
               mutate()
