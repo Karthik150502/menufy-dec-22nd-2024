@@ -2,10 +2,7 @@
 import prisma from "@/lib/prisma/db";
 import { getSession } from "@/auth/getSession"
 import { S3Handler } from "@/lib/s3/s3-main";
-
-
-
-export async function deleteDish(ids: string[]) {
+export async function deleteDishes(ids: string[]) {
     const session = await getSession();
     if (!session?.user) {
         throw new Error("Unauthenticated")
@@ -17,12 +14,22 @@ export async function deleteDish(ids: string[]) {
             }
         }
     })
+    const keysToDelete = dishes.filter((item) => {
+        return item.imageKey !== null || undefined
+    }).map(item => {
+        return { Key: item.imageKey }
+    });
 
-    dishes.forEach(async (item) => {
-        if (item.imageKey) {
-            await S3Handler.deletObject(item.imageKey)
+    await prisma.dish.deleteMany({
+        where: {
+            id: {
+                in: ids
+            }
         }
     })
+    if (keysToDelete.length) {
+        await S3Handler.deleteObjects(keysToDelete as { Key: string }[])
+    }
 }
 
 

@@ -1,9 +1,7 @@
 "use server"
-
 import { getSession } from "@/auth/getSession";
 import prisma from "@/lib/prisma/db";
 import { DishEditSchema, DishEditType } from "@/schema/dish/create";
-
 
 export async function editDish(id: string, values: DishEditType) {
     const session = await getSession();

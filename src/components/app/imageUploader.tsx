@@ -8,6 +8,7 @@ import { Button } from '../ui/button'
 import { Compressor } from '@/lib/compress';
 import TooltipWrapper from './tooltipWrapper'
 import { Env } from '@/lib/config'
+import { cn } from '@/lib/utils'
 
 type Props = {
     setFile: (file: File | null) => void,
@@ -24,7 +25,7 @@ export default function ImageUploader({ setFile, image, setImage }: Props) {
         <div className='w-[200px] h-[150px] border rounded-lg flex flex-col items-center justify-between gap-2 py-4 relative'>
             {
                 <div className='w-[150px] h-[100px] overflow-hidden rounded-xl'>
-                    <Image ref={imageRef} src={image ? image : Env.DEFAULT_DISH_IMAGE} height={150} width={100} alt={"Profile Image"} className='object-cover w-full h-full border rounded-lg'
+                    <Image ref={imageRef} src={image ? image : Env.DEFAULT_DISH_IMAGE} height={150} width={100} alt={"Profile Image"} className={cn('w-full h-full border rounded-lg', image ? "object-cover" : "object-contain")}
                     />
                 </div>
             }

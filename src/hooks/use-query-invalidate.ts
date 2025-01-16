@@ -5,9 +5,9 @@ import { useCallback, useEffect, useState } from "react";
 
 export function useInvalidateQueries() {
     const queryClient = useQueryClient();
-    const cb = useCallback((queries: (string | number | null | undefined)[]) => {
+    const cb = useCallback((...queries: (string | number | null | undefined)[]) => {
         queryClient.invalidateQueries({
-            queryKey: [...queries]
+            queryKey: queries
         })
     }, [queryClient])
     return cb;

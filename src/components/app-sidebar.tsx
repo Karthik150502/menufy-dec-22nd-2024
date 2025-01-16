@@ -16,8 +16,7 @@ import { Brand } from "./auth/brand"
 import { Separator } from "./ui/separator"
 import { PowerOff, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useSearchParams } from "next/navigation"
-import { useSetRecoilState } from "recoil"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 import { SelectedCategory } from "@/store/recoil/catAtom"
 import { signOut } from "next-auth/react"
 import { GlobalRestaurantSelc } from "./app/globalRestaurantSelector"
@@ -25,13 +24,15 @@ import { useMenufyOptions } from "@/providers/optionsProvider"
 import Link from "next/link"
 import LoaderCmp from "./app/loader"
 import ConfirmModal from "./app/confirmModal"
-
+import { useSearchParams } from "next/navigation"
+import { SelectedRestaurant } from "@/store/recoil/restAtom"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const options = useMenufyOptions();
-  const sParams = useSearchParams();
-  const categoryId = sParams.get("categoryId");
+  const params = useSearchParams();
+  const categoryId = params.get("categoryId")
   const setCat = useSetRecoilState(SelectedCategory);
+  const rest = useRecoilValue(SelectedRestaurant);
 
   return (
     <Sidebar {...props}>
@@ -56,7 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {options?.categories ? options?.categories.map((item) => {
                 return <SidebarMenuItem key={item.id} className={cn("flex items-center justify-center pr-2 border-b opacity-80 transition-opacity hover:opacity-100 duration-300")}>
                   <SidebarMenuButton asChild >
-                    <Link href={`/dishes?categoryId=${item.id}`} onClick={() => {
+                    <Link href={`/dishes?restId=${rest?.id}&categoryId=${item.id}`} onClick={() => {
                       setCat({
                         id: item.id,
                         name: item.name

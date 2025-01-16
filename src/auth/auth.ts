@@ -72,6 +72,7 @@ export const authOptions: AuthOptions = {
                 session.user.email = token.email;
                 session.user.tempEmail = token.tempEmail as string | null;
                 session.user.isOAuth = token.isOAuth as boolean;
+                session.user.image = token.picture as string
             }
 
             return session;
@@ -99,7 +100,7 @@ export const authOptions: AuthOptions = {
             token.tempEmail = existingUser.tempEmail;
             token.role = existingUser.role;
             token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-
+            token.picture = existingUser.image
             return token;
         }
     },

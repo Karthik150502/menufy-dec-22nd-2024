@@ -26,9 +26,6 @@ export default function DishCard({
     onSelectDelete
 }: Props) {
 
-
-
-
     return (
         <div className={cn('border text-center rounded-lg flex items-center justify-between shadow-lg p-3 h-[185px] gap-2 py-4', {
             "cursor-pointer": deleteItemActive
@@ -41,8 +38,7 @@ export default function DishCard({
             <div className='w-full h-full flex flex-col items-start justify-between gap-2'>
 
                 <div className='w-[150px] h-[100px] border rounded-lg'>
-                    <Image src={dish.image ? dish.image : Env.DEFAULT_DISH_IMAGE} height={150} width={100} alt={"Dish Image"} className='object-cover w-full h-full border rounded-lg'
-                    />
+                    <Image src={dish.image ? dish.image : Env.DEFAULT_DISH_IMAGE} height={150} width={100} alt={"Dish Image"} className={cn("w-full h-full border rounded-lg", dish.image ? "object-cover" : "object-contain")} />
                 </div>
                 <TooltipWrapper content={dish.name}>
                     <p className='w-full line-clamp-2 text-left text-xs'>{dish.name}</p>

@@ -16,10 +16,20 @@ type Props = {
     description?: string,
     onCancelAction?: () => void,
     onConfirmAction: () => void,
-    children: ReactNode
+    children: ReactNode,
+    onConfirmVariant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null,
+    onCancelVariant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null,
 }
 
-export default function ConfirmModal({ label, description, onCancelAction, onConfirmAction, children }: Props) {
+export default function ConfirmModal({
+    label,
+    description,
+    onCancelAction,
+    onConfirmAction,
+    children,
+    onConfirmVariant,
+    onCancelVariant
+}: Props) {
 
     const [open, setOpen] = useState<boolean>(false);
 
@@ -35,7 +45,7 @@ export default function ConfirmModal({ label, description, onCancelAction, onCon
                 </DialogHeader>
                 <DialogFooter className='flex items-center justify-center gap-2'>
                     <Button
-                        variant={"outline"}
+                        variant={onCancelVariant ? onCancelVariant : "outline"}
                         onClick={() => {
                             if (onCancelAction) {
                                 onCancelAction()
@@ -44,6 +54,7 @@ export default function ConfirmModal({ label, description, onCancelAction, onCon
                         }}
                     >Cancel</Button>
                     <Button
+                        variant={onConfirmVariant ? onConfirmVariant : "default"}
                         onClick={() => {
                             onConfirmAction()
                             setOpen(false);

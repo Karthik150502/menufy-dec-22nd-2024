@@ -34,7 +34,6 @@ import { useSession } from 'next-auth/react';
 export default function EditProfileDialog() {
     const user = useCurrentUser();
     const { update } = useSession()
-    console.log("User profile = ", user);
 
     const [open, setOpen] = useState<boolean>(false)
     const form = useForm<UpdateProfileSchemaType>({
@@ -52,26 +51,23 @@ export default function EditProfileDialog() {
     const updateMutation = useMutation({
         mutationKey: ["edit-profile", user?.image],
         mutationFn: async ({ values, imageFile }: { values: UpdateProfileSchemaType, imageFile?: File | null }) => {
-
             const { image: updatedImage } = values;
-            const image = (await uploadProfileImageS3({
+            const params = {
                 imageFile,
                 profileImage: user?.image,
                 updatedImage,
                 userId: user?.id
-            }))[0];
-
-            return await updateProfile({ ...values, image })
+            };
+            const image = await uploadProfileImageS3(params);
+            return await updateProfile({ ...values, image });
         },
         onSuccess: (data) => {
             toast.success("Updated the profile", { id: "profile=update" })
             setOpen(false)
             const { updatedUser } = data;
+            console.log("Updated user", updatedUser);
             update({
-                name: updatedUser.name,
-                isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
-                role: updatedUser.role,
-                image: updatedUser.image
+                ...updatedUser
             })
         },
         onError: (error) => {

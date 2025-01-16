@@ -1,6 +1,6 @@
 'use client'
 import { CategoryOptionsType, OptionsType, RestaurantOptionsType } from '@/types/optionsProvider'
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useQuery } from "@tanstack/react-query"
 import { useSession } from 'next-auth/react'
 import { getOptions } from '@/actions/app/fetchData/getOptions'
@@ -34,12 +34,12 @@ export default function MenufyOptsProvider({ children }: {
             const res = await getCategories(rest?.id);
 
             if (res.categories && res.categories.length) {
-                let cat = res.categories[0];
+                const cat = res.categories[0];
                 setCat({
                     id: cat.id,
                     name: cat.name
                 })
-                router.push(`/dishes?categoryId=${cat.id}`)
+                router.push(`/dishes?restId=${rest?.id}&categoryId=${cat.id}`)
             } else {
                 router.push(`/dashboard`)
             }

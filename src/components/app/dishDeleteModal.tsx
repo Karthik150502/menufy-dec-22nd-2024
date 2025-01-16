@@ -12,7 +12,7 @@ import {
 import { useInvalidateQueries } from "@/hooks/use-query-invalidate"
 import { SelectedRestaurant } from "@/store/recoil/restAtom"
 import { useMutation } from "@tanstack/react-query"
-import axios from "axios"
+import axios from '@/lib/axios'
 import React from 'react'
 import { useRecoilValue } from "recoil"
 import { toast } from "sonner"

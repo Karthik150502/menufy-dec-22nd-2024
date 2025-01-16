@@ -2,15 +2,20 @@ import React from 'react'
 import { redirect } from 'next/navigation'
 import DishesDisplay from '@/components/app/dishesDisplay'
 import DishHeading from '@/components/app/dishesHeadig'
+
 type Props = {
     searchParams: {
-        categoryId?: string
+        categoryId: string,
+        restId: string
     }
 }
+
 export default function DishesPage({ searchParams: {
-    categoryId
+    categoryId,
+    restId
 } }: Props) {
-    if (!categoryId) {
+
+    if (!categoryId || !restId) {
         redirect("/dashboard")
     }
 

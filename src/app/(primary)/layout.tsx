@@ -1,6 +1,5 @@
-
+import React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
-import BreadCrumbHeader from "@/components/app/breadCrumb"
 import CurrentRestaurant from "@/components/app/currentRestaurant"
 import FloatingDockDashboard from "@/components/app/floatingDockDashboard"
 import Profile from "@/components/app/profileInfoCard"
@@ -12,7 +11,7 @@ import {
 } from "@/components/ui/sidebar"
 import { DarkModeToggle } from "@/components/ui/themeSwitch"
 import MenufyOptsProvider from "@/providers/optionsProvider"
-import React from "react"
+// import BreadCrumbHeader from "@/components/app/breadCrumb"
 
 export default function LayoutPage({ children }: { children: React.ReactNode }) {
     return (
@@ -26,7 +25,7 @@ export default function LayoutPage({ children }: { children: React.ReactNode }) 
                             <Separator orientation="vertical" className="mr-2 h-4" />
                             <CurrentRestaurant />
                             <Separator orientation="vertical" className="mr-2 h-4" />
-                            <BreadCrumbHeader />
+                            {/* <BreadCrumbHeader /> */}
                         </div>
                         <div className="flex items-center justify-center gap-4">
                             <DarkModeToggle />

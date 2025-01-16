@@ -30,7 +30,7 @@ export default function ProfileImageUploader({ setFile, image, setImage, name }:
                         src={image ? image : "https://cdn-icons-png.flaticon.com/128/847/847969.png"}
                         height={100}
                         width={100}
-                        className='rounded-full h-[100px] w-[100px]'
+                        className='rounded-full object-cover h-[100px] w-[100px]'
                     />
                     <TooltipWrapper
                         content={image ? "Delete image" : "Click to upload"}
@@ -58,7 +58,7 @@ export default function ProfileImageUploader({ setFile, image, setImage, name }:
                         const fileName = file.name;
                         const fileType = file.type;
                         const url = await Compressor.compressImage(e.target.files[0]);
-                        setImage(url)   
+                        setImage(url)
                         const updatedFile = await Compressor.urlToFile(url, fileName, fileType);
                         setFile(updatedFile)
                     } catch (e) {

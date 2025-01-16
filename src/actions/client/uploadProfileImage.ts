@@ -10,21 +10,18 @@ type ProfileImageProps = {
 }
 
 export async function uploadProfileImageS3(data: ProfileImageProps) {
-
     let image;
-    let imageKey;
-    if (data.profileImage && data.updatedImage !== data.profileImage) {
+    if (data.userId && data.profileImage && data.updatedImage !== data.profileImage) {
         const imageKey = getS3ImageKey(data.profileImage);
         await S3Handler.deletObject(imageKey);
     }
     if (data.imageFile) {
-        imageKey = `${data.userId}-${Date.now()}.jpg`;
         const params = {
             body: data.imageFile as File,
             folder: "user-image/",
-            key: imageKey
+            key: `${data.userId}-${Date.now()}.jpg`
         };
         image = await S3Handler.uploadObject(params);
     }
-    return [image, `user-image//${imageKey}`]
+    return image ? image : data.profileImage
 }

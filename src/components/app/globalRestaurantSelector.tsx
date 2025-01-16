@@ -1,5 +1,5 @@
 "use client"
-import { Check, ChevronsUpDown, HomeIcon } from "lucide-react"
+import { Check, HomeIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Command,

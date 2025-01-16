@@ -5,27 +5,29 @@ import { Button } from '../ui/button'
 import { useRecoilState } from 'recoil'
 import { DeleteItemActive } from '@/store/recoil/itemDeleteActiveAtom'
 import { Trash, X } from 'lucide-react'
+import ConfirmModal from './confirmModal'
 
 
 type Props = {
     onSelectAll: () => void,
     allSelect: boolean,
     onCancel: () => void,
-    onDelete: () => void
+    onDelete: () => void,
+    noOfItems: number
 }
 
-export default function DeleteItemActiveToggle({ onSelectAll, allSelect, onCancel, onDelete }: Props) {
+export default function DeleteItemActiveToggle({ noOfItems, onSelectAll, allSelect, onCancel, onDelete }: Props) {
 
     const [deleteItemActive, setDeleteItemActive] = useRecoilState(DeleteItemActive);
     return (
         <div className='flex items-center justify-center gap-2'>
             {
                 deleteItemActive && <div className="flex items-center justify-center gap-2">
-                    <Button variant={"destructive"} onClick={() => {
-                        onDelete()
-                    }} size={"sm"} className="text-xs">
-                        Delete selected Items
-                    </Button>
+                    <ConfirmModal label="Are you sure?" description={`Delete ${noOfItems} items? The action can't be undone`} onConfirmAction={onDelete} onConfirmVariant={"destructive"}>
+                        <Button variant={"destructive"} size={"sm"} className="text-xs">
+                            Delete selected Items
+                        </Button>
+                    </ConfirmModal>
                     <Button variant={"outline"} onClick={() => {
                         onSelectAll()
                     }} size={"sm"} className="text-xs">

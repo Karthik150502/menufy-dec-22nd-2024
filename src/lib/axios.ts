@@ -4,7 +4,10 @@ import { Env } from "./config";
 
 const axiosClientSingleton = () => {
     return AXIOS.create({
-        baseURL: Env.APP_URL
+        baseURL: Env.APP_URL,
+        headers: {
+            Accept: "application/json, text/plain, */*",
+        },
     })
 }
 

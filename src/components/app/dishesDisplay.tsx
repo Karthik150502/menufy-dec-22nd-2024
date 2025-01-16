@@ -1,25 +1,27 @@
 'use client'
 import { getDishes } from '@/actions/app/fetchData/getDishes'
 import { SelectedRestaurant } from '@/store/recoil/restAtom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import React, { useCallback, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import DishCard from './dishCard'
 import CreateDishModal from './createDishModal'
-import { useSetRecoilState } from 'recoil'
-import { SelectedCategory } from '@/store/recoil/catAtom'
 import { DeleteItemActive } from '@/store/recoil/itemDeleteActiveAtom'
 import DeleteItemActiveToggle from './deleteItemActiveToggle'
+import { deleteDishes } from '@/actions/app/deleteData/deleteDishes'
+import { toast } from 'sonner'
+import { useInvalidateQueries } from '@/hooks/use-query-invalidate'
 export default function DishesDisplay({
     categoryId
 }: {
     categoryId: string,
 }) {
-    const setCatId = useSetRecoilState(SelectedCategory);
     const [idsToDelete, setIdsToDelete] = useState<Set<string>>(new Set([]));
+
     const [allSelect, setAllSelect] = useState<boolean>(false)
     const rest = useRecoilValue(SelectedRestaurant);
-    const deleteItemActive = useRecoilValue(DeleteItemActive);
+    const invalidate = useInvalidateQueries();
+    const [deleteItemActive, setDeleteItemActive] = useRecoilState(DeleteItemActive);
 
     const { data } = useQuery({
         queryKey: ['dishes', rest?.id, categoryId],
@@ -28,6 +30,22 @@ export default function DishesDisplay({
         }
     })
 
+    const { mutate } = useMutation({
+        mutationFn: async (ids: string[]) => {
+            await deleteDishes(ids)
+        },
+        onSuccess: () => {
+            invalidate('dishes', rest?.id, categoryId)
+            toast.success("Deleted all items", { id: "delete-all" });
+            setDeleteItemActive(false);
+            setAllSelect(false);
+        },
+        onError: () => {
+            toast.error("Failed to delete items", { id: "delete-all" })
+            setDeleteItemActive(false);
+            setAllSelect(false);
+        }
+    })
 
     const checkAllSelc = useCallback((ids: Set<string>) => {
         if (ids.size === data?.length) {
@@ -70,13 +88,17 @@ export default function DishesDisplay({
         <div className='w-full h-[calc(100vh-220px)] flex flex-col items-center justify-start gap-1'>
             <div className="h-[45px] flex items-center gap-2 justify-between w-full p-2">
                 <DeleteItemActiveToggle
+                    noOfItems={idsToDelete.size}
                     onDelete={() => {
                         console.log("Ids to delete: ", idsToDelete)
+                        toast.loading("Deleting items...", { id: "delete-all" })
+                        mutate(Array.from(idsToDelete))
                     }}
                     onCancel={refreshData}
                     allSelect={allSelect}
                     onSelectAll={onSelectAll}
                 />
+
                 <CreateDishModal categoryId={categoryId} />
             </div>
             <div className='w-full border h-[calc(100vh-265px)] rounded-xl grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 shadow-inner p-4 overflow-auto no-scrollbar relative'>

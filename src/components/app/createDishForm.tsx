@@ -24,7 +24,7 @@ import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import { useInvalidateQueries } from '@/hooks/use-query-invalidate';
 import ImageUploader from './imageUploader';
-import axios from "axios"
+import axios from '@/lib/axios'
 import { uploadDishImageS3 } from '@/actions/client/uploadItemImageToS3';
 export default function CreateDishForm({
     categoryId,
@@ -68,7 +68,7 @@ export default function CreateDishForm({
         },
         onSuccess: () => {
             toast.success("Created item", { id: "creating-item" });
-            invalidateQueries(["dishes", rest?.id, categoryId])
+            invalidateQueries("dishes", rest?.id, categoryId)
             setDialogOpen(false);
         },
         onError: (error) => {

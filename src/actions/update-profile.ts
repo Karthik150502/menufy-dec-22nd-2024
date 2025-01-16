@@ -47,7 +47,6 @@ export async function updateProfile(
     );
   }
 
-
   const updatedUser = {
     name: values.name,
     tempEmail: user.isOAuth || !updateEmail ? undefined : values.email,
